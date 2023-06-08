@@ -14,8 +14,12 @@ class MenuClientes extends StatefulWidget {
 }
 
 class _MenuClientesState extends State<MenuClientes> {
-  late List<Comida> comidas; // Declarar la lista como variable de instancia
+  late List<Comida> comidas;
   TextEditingController textController = TextEditingController();
+  List<ComidaBusq>? _comidas;
+  bool _showBusqueda =
+      false; // Variable para controlar la visibilidad del contenedor de búsquedas
+
   @override
   void initState() {
     super.initState();
@@ -77,11 +81,11 @@ class _MenuClientesState extends State<MenuClientes> {
         ComidaBusq comida = ComidaBusq.fromJson(item);
         comidas.add(comida);
         print('Nombre: ${comida.nombre}');
-  print('Descripción: ${comida.descripcion}');
-  print('Precio: ${comida.precio}');
-  print('URL de imagen: ${comida.urlImage}');
-  print('-----------------------');
-    print('-----------------------');
+        print('Descripción: ${comida.descripcion}');
+        print('Precio: ${comida.precio}');
+        print('URL de imagen: ${comida.urlImage}');
+        print('-----------------------');
+        print('-----------------------');
       }
       // Retornar la lista de comidas
       print('${comidas}lll');
@@ -99,101 +103,166 @@ class _MenuClientesState extends State<MenuClientes> {
         appBar: AppBar(
           title: const Text('Menu de AppFood'),
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              AnimSearchBar(
-                width: 400,
-                textController: textController,
-                onSuffixTap: () {
-                 
-                },
-                onSubmitted: (searchText) {
-                  buscarComida(searchText).then((comidas) {
-                    // Hacer algo con la lista de comidas
-                    // Por ejemplo, actualizar el estado de tu widget y mostrar los resultados en la interfaz
-                  }).catchError((error) {
-                    // Manejar errores de solicitud aquí
-                    print('Error: $error');
+        body: Column(
+          children: [
+            AnimSearchBar(
+              width: 400,
+              textController: textController,
+              onSuffixTap: () {},
+              onSubmitted: (searchText) {
+                buscarComida(searchText).then((comidas) {
+                  setState(() {
+                    _comidas = comidas;
+                    _showBusqueda =
+                        true; // Mostrar el contenedor de búsquedas al realizar la búsqueda
                   });
-                },
+                }).catchError((error) {
+                  // Manejar errores de solicitud aquí
+                  print('Error: $error');
+                });
+              },
+            ),
+            if (_showBusqueda) // Mostrar el contenedor de búsquedas solo si la variable _showBusqueda es verdadera
+              Expanded(
+                child: _comidas != null && _comidas!.isNotEmpty
+                    ? GridView.count(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 10.0,
+                        crossAxisSpacing: 10.0,
+                        childAspectRatio: 1.20,
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        children: _comidas!.map((comida) {
+                          return buildComidaBusqCard(comida);
+                        }).toList(),
+                      )
+                    : Container(),
               ),
-              FutureBuilder<List<Comida>>(
-                future: fetchData(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<List<Comida>> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
-                  } else {
-                    List<Comida>? comidas = snapshot.data;
-                    return SingleChildScrollView(
+            FutureBuilder<List<Comida>>(
+              future: fetchData(),
+              builder:
+                  (BuildContext context, AsyncSnapshot<List<Comida>> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else {
+                  List<Comida>? comidas = snapshot.data;
+                  return Expanded(
+                    child: SingleChildScrollView(
                       child: GridView.builder(
                         shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           mainAxisSpacing: 10.0,
                           crossAxisSpacing: 10.0,
-                          childAspectRatio: 0.75,
+                          childAspectRatio: 1.20,
                         ),
                         itemCount: comidas?.length ?? 0,
                         itemBuilder: (BuildContext context, int index) {
                           Comida comida = comidas![index];
+
                           return Card(
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Container(
-                                  width: double.infinity, // Ancho completo
+                                  width: double.infinity,
                                   child: AspectRatio(
-                                    aspectRatio:
-                                        16 / 9, // Relación de aspecto deseada
+                                    aspectRatio: 16 / 9,
                                     child: Image.network(
                                       comida.urlImage,
-                                      fit: BoxFit
-                                          .cover, // Hace que la imagen cubra el ancho de la tarjeta
+                                      fit: BoxFit.cover,
                                     ),
                                   ),
                                 ),
                                 ListTile(
-                                  title: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        comida.nombre,
-                                        style: GoogleFonts.montserrat(),
-                                      ),
-                                      SizedBox(
-                                          height:
-                                              4), // Espacio entre el título y el subtítulo
-                                      Text(
-                                        '${comida.descripcion}',
-                                        style:
-                                            DefaultTextStyle.of(context).style,
-                                      ),
-                                    ],
-                                  ),
-                                  subtitle: Text(
-                                    '${comida.precio} MXN',
-                                    style: GoogleFonts.roboto(),
-                                  ),
-                                ),
+                                    title: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          comida.nombre,
+                                          style: GoogleFonts.montserrat(),
+                                        ),
+                                        SizedBox(height: 4),
+                                        Text(
+                                          '${comida.descripcion}',
+                                          style: DefaultTextStyle.of(context)
+                                              .style,
+                                        ),
+                                      ],
+                                    ),
+                                    subtitle: Row(
+                                      children: [
+                                        Icon(Icons.monetization_on_outlined),
+                                        Text(
+                                          '${comida.precio}  MXN',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        )
+                                      ],
+                                    )),
                               ],
                             ),
                           );
                         },
                       ),
-                    );
-                  }
-                },
-              ),
-            ],
-          ),
+                    ),
+                  );
+                }
+              },
+            ),
+          ],
         ),
       ),
     );
   }
+}
+
+Card buildComidaBusqCard(ComidaBusq comida) {
+  return Card(
+    child: Container(
+      width: 200, // Cambiar el ancho deseado
+      height: 300, // Cambiar la altura deseada
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Container(
+            width: double.infinity,
+            child: AspectRatio(
+              aspectRatio: 16 / 9,
+              child: Image.network(
+                comida.urlImage,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          ListTile(
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    comida.nombre,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 4),
+                  Text(comida.descripcion),
+                ],
+              ),
+              subtitle: Row(
+                children: [
+                  Icon(Icons.monetization_on_outlined),
+                  Text(
+                    '${comida.precio}  MXN',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )
+                ],
+              )),
+        ],
+      ),
+    ),
+  );
 }
