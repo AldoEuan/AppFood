@@ -81,6 +81,7 @@ class _MenuClientesState extends State<MenuClientes> {
   print('Precio: ${comida.precio}');
   print('URL de imagen: ${comida.urlImage}');
   print('-----------------------');
+    print('-----------------------');
       }
       // Retornar la lista de comidas
       print('${comidas}lll');
