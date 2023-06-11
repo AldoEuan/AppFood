@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       title: "my app",
       home: Inicio(),
     );
@@ -38,7 +38,7 @@ class _InicioState extends State<Inicio> {
         //   title: Text(""),
         // ),
         body: Center(
-      child: Container(
+      child: SizedBox(
         width: 300,
         child: Column(
           children: [
@@ -85,6 +85,7 @@ class _InicioState extends State<Inicio> {
   }
 }
 
+// ignore: non_constant_identifier_names
 void Loggin(BuildContext context, TextEditingController userController,
     TextEditingController passwordController) {
   String user = userController.text;
@@ -96,6 +97,12 @@ void Loggin(BuildContext context, TextEditingController userController,
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => const MenuClientes()));
   } else {
-    Alert(context: context, title: "El Perfil Ingresado no es Valido", desc: "Usuario o Contraseña Incorrectos").show();
+    Alert(
+            context: context,
+            title: "El Perfil Ingresado no es Valido",
+            desc: "Usuario o Contraseña Incorrectos")
+        .show();
   }
+  userController.text = "";
+  passwordController.text = "";
 }

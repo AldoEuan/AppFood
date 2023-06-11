@@ -1,5 +1,5 @@
 import 'dart:convert';
- 
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:appfood/pages/Comidas.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -40,7 +40,10 @@ class _BebidasState extends State<Bebidas> {
     String precio = precioController.text;
     String imagen = imageController.text;
 
-    // Crear el cuerpo de la solicitud
+    if(id==""||nombre==""||descripcion==""||imageController.text==""||precio==""){
+ Alert(context: context, title: "Error al Agregar Comida", desc: "Llene todos los campos del formulario").show();
+    }
+    else{// Crear el cuerpo de la solicitud
     var body = {
       'nombre': nombre,
       'urlImage': imagen,
@@ -79,6 +82,7 @@ class _BebidasState extends State<Bebidas> {
     } finally {
       print(valoresIngresados);
       print(body);
+    }
     }
   }
 
