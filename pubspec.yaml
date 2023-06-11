@@ -36,6 +36,8 @@ dependencies:
   card_swiper: ^2.0.4
   google_fonts: ^2.1.0
   anim_search_bar: ^2.0.3
+  rflutter_alert: ^2.0.7
+  card_loading: ^0.3.0
 
 
   
