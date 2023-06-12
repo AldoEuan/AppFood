@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:anim_search_bar/anim_search_bar.dart';
 import 'package:card_loading/card_loading.dart';
+
 class MenuClientes extends StatefulWidget {
   const MenuClientes({Key? key});
 
@@ -80,15 +81,8 @@ class _MenuClientesState extends State<MenuClientes> {
       for (var item in responseData) {
         ComidaBusq comida = ComidaBusq.fromJson(item);
         comidas.add(comida);
-        print('Nombre: ${comida.nombre}');
-        print('Descripción: ${comida.descripcion}');
-        print('Precio: ${comida.precio}');
-        print('URL de imagen: ${comida.urlImage}');
-        print('-----------------------');
-        print('-----------------------');
       }
       // Retornar la lista de comidas
-      print('${comidas}lll');
       return comidas;
     } else {
       // La solicitud no fue exitosa, maneja el error según corresponda
@@ -131,7 +125,7 @@ class _MenuClientesState extends State<MenuClientes> {
                         crossAxisSpacing: 10.0,
                         childAspectRatio: 1.20,
                         shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         children: _comidas!.map((comida) {
                           return buildComidaBusqCard(comida);
                         }).toList(),
@@ -143,11 +137,13 @@ class _MenuClientesState extends State<MenuClientes> {
               builder:
                   (BuildContext context, AsyncSnapshot<List<Comida>> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CardLoading(
-  height: 600,
-  borderRadius: BorderRadius.all(Radius.circular(10)),
-  margin: EdgeInsets.only(bottom: 10),
-),);
+                  return const Center(
+                    child: CardLoading(
+                      height: 600,
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      margin: EdgeInsets.only(bottom: 10),
+                    ),
+                  );
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 } else {
@@ -156,7 +152,7 @@ class _MenuClientesState extends State<MenuClientes> {
                     child: SingleChildScrollView(
                       child: GridView.builder(
                         shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
@@ -172,7 +168,7 @@ class _MenuClientesState extends State<MenuClientes> {
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Container(
+                                SizedBox(
                                   width: double.infinity,
                                   child: AspectRatio(
                                     aspectRatio: 16 / 9,
@@ -191,9 +187,9 @@ class _MenuClientesState extends State<MenuClientes> {
                                           comida.nombre,
                                           style: GoogleFonts.montserrat(),
                                         ),
-                                        SizedBox(height: 4),
+                                        const SizedBox(height: 4),
                                         Text(
-                                          '${comida.descripcion}',
+                                          comida.descripcion,
                                           style: DefaultTextStyle.of(context)
                                               .style,
                                         ),
@@ -201,10 +197,11 @@ class _MenuClientesState extends State<MenuClientes> {
                                     ),
                                     subtitle: Row(
                                       children: [
-                                        Icon(Icons.monetization_on_outlined),
+                                        const Icon(
+                                            Icons.monetization_on_outlined),
                                         Text(
                                           '${comida.precio}  MXN',
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                               fontWeight: FontWeight.bold),
                                         )
                                       ],
@@ -228,13 +225,13 @@ class _MenuClientesState extends State<MenuClientes> {
 
 Card buildComidaBusqCard(ComidaBusq comida) {
   return Card(
-    child: Container(
+    child: SizedBox(
       width: 200, // Cambiar el ancho deseado
       height: 300, // Cambiar la altura deseada
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
-          Container(
+          SizedBox(
             width: double.infinity,
             child: AspectRatio(
               aspectRatio: 16 / 9,
@@ -250,18 +247,18 @@ Card buildComidaBusqCard(ComidaBusq comida) {
                 children: [
                   Text(
                     comida.nombre,
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   Text(comida.descripcion),
                 ],
               ),
               subtitle: Row(
                 children: [
-                  Icon(Icons.monetization_on_outlined),
+                  const Icon(Icons.monetization_on_outlined),
                   Text(
                     '${comida.precio}  MXN',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   )
                 ],
               )),

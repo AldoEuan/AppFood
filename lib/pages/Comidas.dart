@@ -52,7 +52,7 @@ class _ComidasState extends State<Comidas> {
   }
 
   Future<void> eliminarComida(int index) async {
-    if (comidas != null && index >= 0 && index < comidas.length) {
+    if (index >= 0 && index < comidas.length) {
       Comida comida = comidas[index];
       var url = Uri.parse(
           'https://pnrxncugq7.execute-api.us-east-1.amazonaws.com/prueba/comida/?id=${comida.id}');
@@ -62,18 +62,19 @@ class _ComidasState extends State<Comidas> {
         setState(() {
           comidas.removeAt(index);
         });
-        print("Eliminado");
+       
       } else {
-        print("Error al eliminar comida");
+        
       }
     }
   }
 
   Future<void> editarComida(int index) async {
     List<Comida>? comidasList = await fetchData();
-    if (comidasList != null && index >= 0 && index < comidasList.length) {
+    if (index >= 0 && index < comidasList.length) {
       Comida comida = comidasList[index];
 
+      // ignore: use_build_context_synchronously
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -146,6 +147,7 @@ class _ComidasState extends State<Comidas> {
                     print('Error al actualizar comida');
                   }
 
+                  // ignore: use_build_context_synchronously
                   Navigator.of(context).pop();
                 },
                 child: const Text('Guardar'),
@@ -189,7 +191,7 @@ class _ComidasState extends State<Comidas> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Container(
+                        SizedBox(
                           width: double.infinity,
                           child: AspectRatio(
                             aspectRatio: 16 / 9,
@@ -207,9 +209,9 @@ class _ComidasState extends State<Comidas> {
                                 comida.nombre,
                                 style: GoogleFonts.montserrat(),
                               ),
-                              SizedBox(height: 4),
+                             const SizedBox(height: 4),
                               Text(
-                                '${comida.descripcion}',
+                                comida.descripcion,
                                 style: DefaultTextStyle.of(context).style,
                               ),
                             ],
@@ -255,15 +257,15 @@ class _ComidasState extends State<Comidas> {
                                   },
                                 );
                               },
-                              label: Text(''),
-                              icon: Icon(Icons.delete_outline),
+                              label: const Text(''),
+                              icon: const Icon(Icons.delete_outline),
                             ),
                             ElevatedButton.icon(
                               onPressed: () {
                                 editarComida(index);
                               },
-                              label: Text(''),
-                              icon: Icon(Icons.edit),
+                              label:const Text(''),
+                              icon: const Icon(Icons.edit),
                             ),
                           ],
                         ),

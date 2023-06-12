@@ -32,7 +32,6 @@ class _BebidasState extends State<Bebidas> {
   }
 
   Future<void> postComida() async {
-    print("btn presionado");
     // Obtener los valores de los controladores de texto
     String id = idController.text;
     String nombre = nombreController.text;
@@ -40,49 +39,61 @@ class _BebidasState extends State<Bebidas> {
     String precio = precioController.text;
     String imagen = imageController.text;
 
-    if(id==""||nombre==""||descripcion==""||imageController.text==""||precio==""){
- Alert(context: context, title: "Error al Agregar Comida", desc: "Llene todos los campos del formulario").show();
-    }
-    else{// Crear el cuerpo de la solicitud
-    var body = {
-      'nombre': nombre,
-      'urlImage': imagen,
-      'descripcion': descripcion,
-      'id': id,
-      'precio': precio,
-    };
+    if (id == "" ||
+        nombre == "" ||
+        descripcion == "" ||
+        imageController.text == "" ||
+        precio == "") {
+      Alert(
+              context: context,
+              title: "Error al Agregar Comida",
+              desc: "Llene todos los campos del formulario")
+          .show();
+    } else {
+      // Crear el cuerpo de la solicitud
+      var body = {
+        'nombre': nombre,
+        'urlImage': imagen,
+        'descripcion': descripcion,
+        'id': id,
+        'precio': precio,
+      };
 
-    try {
-      // Realizar la solicitud POST a la API
-      var response = await http.post(
-        Uri.parse(
-            'https://pnrxncugq7.execute-api.us-east-1.amazonaws.com/prueba/comida'),
-        body: json.encode(body),
-      );
+      try {
+        // Realizar la solicitud POST a la API
+        var response = await http.post(
+          Uri.parse(
+              'https://pnrxncugq7.execute-api.us-east-1.amazonaws.com/prueba/comida'),
+          body: json.encode(body),
+        );
 
-      if (response.statusCode == 201 || response.statusCode == 200) {
-        // La solicitud fue exitosa
+        if (response.statusCode == 201 || response.statusCode == 200) {
+          // La solicitud fue exitosa
+          setState(() {
+            valoresIngresados = 'Comida añadida exitosamente!';
+          });
+          // ignore: use_build_context_synchronously
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const Comidas()));
+        } else {
+          // La solicitud falló
+          setState(() {
+            valoresIngresados =
+                'Error al añadir comida. Código de respuesta: ${response.statusCode}';
+          });
+        }
+      } catch (e) {
+        // Ocurrió un error durante la solicitud
         setState(() {
-          valoresIngresados = 'Comida añadida exitosamente!';
+          valoresIngresados = 'Error al añadir comida: $e';
         });
-        Navigator.push(context as BuildContext,
-          MaterialPageRoute(builder: (context) => const Comidas()));
-      } else {
-        // La solicitud falló
-        setState(() {
-          valoresIngresados =
-              'Error al añadir comida. Código de respuesta: ${response.statusCode}';
-        });
+      } finally {
+        idController.text = "";
+        nombreController.text = "";
+        descripcionController.text = "";
+        precioController.text = " ";
+        imageController.text = " ";
       }
-    } catch (e) {
-      // Ocurrió un error durante la solicitud
-      setState(() {
-        valoresIngresados = 'Error al añadir comida: $e';
-      });
-    } finally {
-      print(valoresIngresados);
-      print(body);
-    }
     }
   }
 
@@ -98,21 +109,24 @@ class _BebidasState extends State<Bebidas> {
             width: 300,
             child: SingleChildScrollView(
               child: Column(
-                children: [  const SizedBox(height: 10.0),
-                  Image.network("https://cdn-icons-png.flaticon.com/512/2424/2424721.png",width: 100,),
+                children: [
                   const SizedBox(height: 10.0),
-                   Text("Agregar Nueva Comida al Catálogo",
-                      style: GoogleFonts.roboto( 
+                  Image.network(
+                    "https://cdn-icons-png.flaticon.com/512/2424/2424721.png",
+                    width: 100,
+                  ),
+                  const SizedBox(height: 10.0),
+                  Text("Agregar Nueva Comida al Catálogo",
+                      style: GoogleFonts.roboto(
                         fontSize: 30,
                         color: Colors.blue,
-                      fontWeight: FontWeight.bold,
-                        )
-                        ),
+                        fontWeight: FontWeight.bold,
+                      )),
                   const SizedBox(height: 10.0),
                   TextField(
                     keyboardType: TextInputType.number,
                     controller: idController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Id',
                       prefixIcon: Icon(Icons.add_moderator_outlined),
                       border: OutlineInputBorder(),
@@ -121,7 +135,7 @@ class _BebidasState extends State<Bebidas> {
                   const SizedBox(height: 10.0),
                   TextField(
                     controller: nombreController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Nombre',
                       prefixIcon: Icon(Icons.abc_outlined),
                       border: OutlineInputBorder(),
@@ -130,7 +144,7 @@ class _BebidasState extends State<Bebidas> {
                   const SizedBox(height: 10.0),
                   TextField(
                     controller: descripcionController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Descripción',
                       prefixIcon: Icon(Icons.abc_sharp),
                       border: OutlineInputBorder(),
@@ -140,7 +154,7 @@ class _BebidasState extends State<Bebidas> {
                   TextField(
                     keyboardType: TextInputType.number,
                     controller: precioController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Precio',
                       prefixIcon: Icon(Icons.monetization_on_outlined),
                       border: OutlineInputBorder(),
@@ -149,22 +163,25 @@ class _BebidasState extends State<Bebidas> {
                   const SizedBox(height: 10.0),
                   TextField(
                     controller: imageController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Imagen',
                       prefixIcon: Icon(Icons.add_photo_alternate_outlined),
                       border: OutlineInputBorder(),
                     ),
                   ),
-                  SizedBox(height: 15.0),
+                  const SizedBox(height: 15.0),
                   ElevatedButton.icon(
                     onPressed:
                         postComida, // Llamar al método postComida al presionar el botón
                     icon: const Icon(Icons.add_task_outlined),
-                    label:  Text("Añadir Comida",style: GoogleFonts.poppins(
-                      fontSize: 20,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),),
+                    label: Text(
+                      "Añadir Comida",
+                      style: GoogleFonts.poppins(
+                        fontSize: 20,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ],
               ),
