@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:card_loading/card_loading.dart';
-
+import 'package:appfood/widgets/LoadingCard.dart';
 import 'package:appfood/models/Comida.dart';
 
 class Comidas extends StatefulWidget {
@@ -171,12 +171,10 @@ class _ComidasState extends State<Comidas> {
           builder:
               (BuildContext context, AsyncSnapshot<List<Comida>> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CardLoading(
-                  height: 600,
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                  margin: EdgeInsets.only(bottom: 10),
-                ),
+              return  Column(
+                children:[
+                  cardloaging(),
+                ] 
               );
             } else if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));

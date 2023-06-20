@@ -6,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:anim_search_bar/anim_search_bar.dart';
 import 'package:card_loading/card_loading.dart';
-
+import 'package:appfood/pages/Bebidaspag.dart';
 class MenuClientes extends StatefulWidget {
   const MenuClientes({Key? key});
 
@@ -55,11 +55,12 @@ class _MenuClientesState extends State<MenuClientes> {
 
   Future<List<ComidaBusq>> buscarComida(String searchText) async {
     var url = Uri.parse(
-        'https://pnrxncugq7.execute-api.us-east-1.amazonaws.com/prueba/buscadorcomida');
+        'https://pnrxncugq7.execute-api.us-east-1.amazonaws.com/bComidas/buscadorcomida');
 
     // Crear un mapa con los datos que se enviarán en el cuerpo de la petición
+    String nombre_comida = 'search_query';
     var requestBody = {
-      'search_query': searchText,
+      nombre_comida: searchText,
     };
 
     // Convertir el mapa a formato JSON
@@ -98,7 +99,20 @@ class _MenuClientesState extends State<MenuClientes> {
           title: const Text('Menu de AppFood'),
         ),
         body: Column(
-          children: [
+          children: [ElevatedButton.icon(
+              onPressed: () => {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => Bebidaspag()))
+              }, // Llamar al método postComida al presionar el botón
+              label: Text(
+                "Bebidas",
+                style: GoogleFonts.poppins(
+                  fontSize: 20,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              icon: const Icon(Icons.local_drink_sharp),
+            ),
             AnimSearchBar(
               width: 400,
               textController: textController,
@@ -137,13 +151,9 @@ class _MenuClientesState extends State<MenuClientes> {
               builder:
                   (BuildContext context, AsyncSnapshot<List<Comida>> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CardLoading(
-                      height: 600,
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      margin: EdgeInsets.only(bottom: 10),
-                    ),
-                  );
+                  return Column(children: [
+                    cardloaging(),
+                  ]);
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 } else {
@@ -265,5 +275,81 @@ Card buildComidaBusqCard(ComidaBusq comida) {
         ],
       ),
     ),
+  );
+}
+
+Widget cardloaging() {
+  return Column(
+    children: [
+      CardLoading(
+        height: 30,
+        borderRadius: BorderRadius.all(Radius.circular(15)),
+        width: 100,
+        margin: EdgeInsets.only(bottom: 10),
+      ),
+      CardLoading(
+        height: 100,
+        borderRadius: BorderRadius.all(Radius.circular(15)),
+        margin: EdgeInsets.only(bottom: 10),
+      ),
+      CardLoading(
+        height: 30,
+        width: 200,
+        borderRadius: BorderRadius.all(Radius.circular(15)),
+        margin: EdgeInsets.only(bottom: 10),
+      ),
+       CardLoading(
+        height: 30,
+        borderRadius: BorderRadius.all(Radius.circular(15)),
+        width: 100,
+        margin: EdgeInsets.only(bottom: 10),
+      ),
+      CardLoading(
+        height: 100,
+        borderRadius: BorderRadius.all(Radius.circular(15)),
+        margin: EdgeInsets.only(bottom: 10),
+      ),
+      CardLoading(
+        height: 30,
+        width: 200,
+        borderRadius: BorderRadius.all(Radius.circular(15)),
+        margin: EdgeInsets.only(bottom: 10),
+      ),
+       CardLoading(
+        height: 30,
+        borderRadius: BorderRadius.all(Radius.circular(15)),
+        width: 100,
+        margin: EdgeInsets.only(bottom: 10),
+      ),
+      CardLoading(
+        height: 100,
+        borderRadius: BorderRadius.all(Radius.circular(15)),
+        margin: EdgeInsets.only(bottom: 10),
+      ),
+      CardLoading(
+        height: 30,
+        width: 200,
+        borderRadius: BorderRadius.all(Radius.circular(15)),
+        margin: EdgeInsets.only(bottom: 10),
+      ),
+       CardLoading(
+        height: 30,
+        borderRadius: BorderRadius.all(Radius.circular(15)),
+        width: 100,
+        margin: EdgeInsets.only(bottom: 10),
+      ),
+      CardLoading(
+        height: 100,
+        borderRadius: BorderRadius.all(Radius.circular(15)),
+        margin: EdgeInsets.only(bottom: 10),
+      ),
+      CardLoading(
+        height: 30,
+        width: 200,
+        borderRadius: BorderRadius.all(Radius.circular(15)),
+        margin: EdgeInsets.only(bottom: 10),
+      ),
+      
+    ],
   );
 }
